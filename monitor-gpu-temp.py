@@ -28,7 +28,11 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Monitor GPU temperatures and send notifications.")
     parser.add_argument('-c', '--config', type=str, help="Path to the TOML configuration file.")
     parser.add_argument('-g', '--generate-config', action='store_true', help="Generate a default config.toml file.")
-    return parser.parse_args()
+    args = parser.parse_args()
+    if not (args.config or args.generate_config):
+        parser.print_help()
+        exit(0)
+    return args
 def get_gpu_temperatures():
     result = subprocess.run(['nvidia-settings', '-q', 'gpucoretemp'], capture_output=True, text=True)
     output = result.stdout
