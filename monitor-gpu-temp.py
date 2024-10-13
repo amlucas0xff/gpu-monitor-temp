@@ -2,6 +2,7 @@ import subprocess
 import re
 import toml
 import argparse
+from notify_py import Notify  # Add this import at the top of the file
 
 DEFAULT_CONFIG = {
     "GPU0": {
