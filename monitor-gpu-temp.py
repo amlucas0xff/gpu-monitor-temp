@@ -75,6 +75,5 @@ if __name__ == "__main__":
         # Test notification with a dummy message
         send_notification(0, 85, "Test notification: GPU 0 temperature is {temp}°C")
     else:
-        global parser
         parser.print_help()
         exit(0)
