@@ -29,11 +29,12 @@ def parse_arguments():
     parser.add_argument('-c', '--config', type=str, help="Path to the TOML configuration file.")
     parser.add_argument('-g', '--generate-config', action='store_true', help="Generate a default config.toml file.")
     parser.add_argument('-e', '--execute', action='store_true', help="Execute the script to monitor GPU temperatures.")
+    parser.add_argument('-t', '--test-notification', action='store_true', help="Test the notification system.")
     
     args = parser.parse_args()
     
     # Check if more than one argument is provided
-    if sum([args.config is not None, args.generate_config, args.execute]) > 1:
+    if sum([args.config is not None, args.generate_config, args.execute, args.test_notification]) > 1:
         parser.print_help()
         exit(0)
     
