@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 """
-Monitor GPU temperature and send notifications if temperature threshold is detected.
+Monitor GPU temperature and send notification if temperature exceeds a specified threshold.
 
-Author: AMLucas0xff
+Author: amlucas0xff
 Date: 2024-10-13
 Version: 1.0
 License: MIT
@@ -12,7 +12,7 @@ Github: https://github.com/amlucas0xff
 
 This script monitors GPU temperatures using `nvidia-settings` and sends notifications
 if the temperature exceeds a specified threshold. The configuration is managed via
-a TOML file, and notifications are sent using the `notifypy` library for multiplatform
+a toml file, and notifications are sent using the `notifypy` library for multiplatform
 support.
 """
 
@@ -34,6 +34,18 @@ DEFAULT_CONFIG = {
     }
 }
 
+""" config.toml (sample)
+# If the config.toml (preferred) is not present, the script will use default config. specified previouly.
+
+[GPU0]
+threshold = 20
+message = "Card 3090ti temp. is {temp}°C"
+
+[GPU1]
+threshold = 20
+message = "Card 3090 temp. is {temp}°C"
+"""
+
 parser = argparse.ArgumentParser(description="Monitor GPU temperatures and send notifications.")
 parser.add_argument('-c', '--config', type=str, help="Path to the TOML configuration file.")
 parser.add_argument('-g', '--generate-config', action='store_true', help="Generate a default config.toml file.")
@@ -53,15 +65,13 @@ def generate_default_config(file_path='config.toml'):
 
 def parse_arguments():
     args = parser.parse_args()
-    
-    # Check if more than one argument is provided
     if sum([args.config is not None, args.generate_config, args.execute, args.test_notification]) > 1:
         parser.print_help()
         exit(0)    
     return args
 
 def get_gpu_temperatures():
-    result = subprocess.run(['nvidia-settings', '-q', 'gpucoretemp'], capture_output=True, text=True)
+    result = subprocess.run(['nvidia-settingsa', '-q', 'gpucoretemp'], capture_output=True, text=True)
     output = result.stdout
     temperatures = re.findall(r"Attribute 'GPUCoreTemp' \(.*\[gpu:(\d+)\]\): (\d+)\.", output)
     return {gpu: int(temp) for gpu, temp in temperatures}
@@ -95,7 +105,6 @@ if __name__ == "__main__":
             exit(1)
         monitor_temperatures(config)
     elif args.test_notification:
-        # Test notification with a dummy message
         send_notification(0, 85, "Test notification: GPU 0 temperature is {temp}°C")
     else:
         parser.print_help()
