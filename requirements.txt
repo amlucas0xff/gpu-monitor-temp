@@ -3,3 +3,4 @@ re
 toml
 argparse
 termcolor
+notify-py

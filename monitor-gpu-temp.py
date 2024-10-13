@@ -45,7 +45,10 @@ def get_gpu_temperatures():
     temperatures = re.findall(r"Attribute 'GPUCoreTemp' \(.*\[gpu:(\d+)\]\): (\d+)\.", output)
     return {gpu: int(temp) for gpu, temp in temperatures}
 def send_notification(gpu, temp, message):
-    subprocess.run(['notify-send', f'GPU {gpu} Temperature Alert', message.format(temp=temp)])
+    notification = Notify()
+    notification.title = f'GPU {gpu} Temperature Alert'
+    notification.message = message.format(temp=temp)
+    notification.send()
 
 def monitor_temperatures(config):
     temperatures = get_gpu_temperatures()
