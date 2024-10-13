@@ -2,5 +2,4 @@ subprocess
 re
 toml
 argparse
-termcolor
 notifypy

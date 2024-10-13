@@ -1,10 +1,20 @@
 #!/usr/bin/python3
 
-# Description: Monitor GPU temperature. Send notification if temperature threashold is detected.
-# Date: 2024-10-13
-# Github: https://github.com/amlucas0xff
-# Version: 1.0
-# Tested on: Manjaro Linux 24.1.1 / Python 3.12.6
+"""
+Monitor GPU temperature and send notifications if temperature threshold is detected.
+
+Author: AMLucas0xff
+Date: 2024-10-13
+Version: 1.0
+License: MIT
+Tested on: Manjaro Linux 24.1.1 / Python 3.12.6
+Github: https://github.com/amlucas0xff
+
+This script monitors GPU temperatures using `nvidia-settings` and sends notifications
+if the temperature exceeds a specified threshold. The configuration is managed via
+a TOML file, and notifications are sent using the `notifypy` library for multiplatform
+support.
+"""
 
 import subprocess
 import re
@@ -18,7 +28,7 @@ DEFAULT_CONFIG = {
         "threshold": 75,
         "message": "GPU 0 temperature is {temp}°C"
     },
-        "GPU1": {
+    "GPU1": {
         "threshold": 75,
         "message": "GPU 1 temperature is {temp}°C"
     }
