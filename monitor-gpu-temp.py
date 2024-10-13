@@ -21,7 +21,14 @@ import re
 import toml
 import argparse
 import os
+import shutil
+from termcolor import colored
 from notifypy import Notify
+
+# Check if nvidia-settings binary exists
+if not shutil.which('nvidia-settings'):
+    print(colored("The 'nvidia-settings' binary is not found. Please ensure it is installed.", "red"))
+    exit(1)
 
 DEFAULT_CONFIG = {
     "GPU0": {
@@ -71,7 +78,7 @@ def parse_arguments():
     return args
 
 def get_gpu_temperatures():
-    result = subprocess.run(['nvidia-settingsa', '-q', 'gpucoretemp'], capture_output=True, text=True)
+    result = subprocess.run(['nvidia-settings', '-q', 'gpucoretemp'], capture_output=True, text=True)
     output = result.stdout
     temperatures = re.findall(r"Attribute 'GPUCoreTemp' \(.*\[gpu:(\d+)\]\): (\d+)\.", output)
     return {gpu: int(temp) for gpu, temp in temperatures}
