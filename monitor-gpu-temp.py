@@ -71,3 +71,9 @@ if __name__ == "__main__":
             print("The configuration file does not contain any GPU to monitor.")
             exit(1)
         monitor_temperatures(config)
+    elif args.test_notification:
+        # Test notification with a dummy message
+        send_notification(0, 85, "Test notification: GPU 0 temperature is {temp}°C")
+    else:
+        parser.print_help()
+        exit(0)
