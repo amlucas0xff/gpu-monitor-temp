@@ -28,8 +28,9 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Monitor GPU temperatures and send notifications.")
     parser.add_argument('-c', '--config', type=str, help="Path to the TOML configuration file.")
     parser.add_argument('-g', '--generate-config', action='store_true', help="Generate a default config.toml file.")
+    parser.add_argument('-e', '--execute', action='store_true', required=True, help="Execute the script to monitor GPU temperatures.")
     args = parser.parse_args()
-    if not (args.config or args.generate_config):
+    if not (args.config or args.generate_config or args.execute):
         parser.print_help()
         exit(0)
     return args
@@ -49,10 +50,19 @@ def monitor_temperatures(config):
         if temp > threshold:
             send_notification(gpu, temp, message)
 
+import os  # Add this import at the top of the file
+
 if __name__ == "__main__":
     args = parse_arguments()
     if args.generate_config:
         generate_default_config(args.config if args.config else 'config.toml')
-    else:
-        config = load_config(args.config)
+    elif args.execute:
+        config_path = args.config if args.config else 'config.toml'
+        if not args.config and not os.path.exists(config_path):
+            print("No configuration file provided and config.toml does not exist in the current directory.")
+            exit(1)
+        config = load_config(config_path)
+        if not any(key.startswith('GPU') for key in config):
+            print("The configuration file does not contain any GPU to monitor.")
+            exit(1)
         monitor_temperatures(config)
