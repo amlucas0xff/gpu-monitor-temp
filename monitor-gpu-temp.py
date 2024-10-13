@@ -24,13 +24,13 @@ def generate_default_config(file_path='config.toml'):
         toml.dump(DEFAULT_CONFIG, f)
     print(f"Default configuration file generated at {file_path}")
 
+parser = argparse.ArgumentParser(description="Monitor GPU temperatures and send notifications.")
+parser.add_argument('-c', '--config', type=str, help="Path to the TOML configuration file.")
+parser.add_argument('-g', '--generate-config', action='store_true', help="Generate a default config.toml file.")
+parser.add_argument('-e', '--execute', action='store_true', help="Execute the script to monitor GPU temperatures.")
+parser.add_argument('-t', '--test-notification', action='store_true', help="Test the notification system.")
+
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="Monitor GPU temperatures and send notifications.")
-    parser.add_argument('-c', '--config', type=str, help="Path to the TOML configuration file.")
-    parser.add_argument('-g', '--generate-config', action='store_true', help="Generate a default config.toml file.")
-    parser.add_argument('-e', '--execute', action='store_true', help="Execute the script to monitor GPU temperatures.")
-    parser.add_argument('-t', '--test-notification', action='store_true', help="Test the notification system.")
-    
     args = parser.parse_args()
     
     # Check if more than one argument is provided
@@ -75,5 +75,6 @@ if __name__ == "__main__":
         # Test notification with a dummy message
         send_notification(0, 85, "Test notification: GPU 0 temperature is {temp}°C")
     else:
+        global parser
         parser.print_help()
         exit(0)
