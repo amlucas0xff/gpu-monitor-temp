@@ -124,17 +124,18 @@ def monitor_temperatures(config, verbose=False):
 
 if __name__ == "__main__":
     args = parse_arguments()
+    verbose = args.verbose
     if args.generate_config:
-        generate_default_config(args.config if args.config else 'config.toml')
+        generate_default_config(args.config if args.config else 'config.toml', verbose)
     elif args.execute:
         config_path = args.config if args.config else 'config.toml'
-        config = load_config(config_path)
+        config = load_config(config_path, verbose)
         if not any(key.startswith('GPU') for key in config):
             print("The configuration file does not contain any GPU to monitor.")
             exit(1)
-        monitor_temperatures(config)
+        monitor_temperatures(config, verbose)
     elif args.test_notification:
-        send_notification(0, 0, "Test notification: GPU temperature is {temp}°C")
+        send_notification(0, 0, "Test notification: GPU temperature is {temp}°C", verbose)
     else:
         parser.print_help()
         exit(0)
