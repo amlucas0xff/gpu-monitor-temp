@@ -63,7 +63,9 @@ def load_config(file_path):
     if file_path and os.path.exists(file_path):
         with open(file_path, 'r') as f:
             return toml.load(f)
-    return DEFAULT_CONFIG  # Return the default config if the file does not exist
+    else:
+        print("Configuration file not found. Using default configuration.")
+        return DEFAULT_CONFIG  # Return the default config if the file does not exist
 
 def generate_default_config(file_path='config.toml'):
     with open(file_path, 'w') as f:
