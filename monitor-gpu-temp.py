@@ -74,6 +74,11 @@ def load_config(file_path, verbose=False):
         return DEFAULT_CONFIG
 
 def generate_default_config(file_path='config.toml', verbose=False):
+    if os.path.exists(file_path):
+        user_input = input(colored(f"The configuration file {file_path} already exists. Do you want to replace it? (y/n): ", "yellow"))
+        if user_input.lower() != 'y':
+            print(colored("Default configuration file generation aborted.", "red"))
+            return
     with open(file_path, 'w') as f:
         toml.dump(DEFAULT_CONFIG, f)
     print(colored(f"Default configuration file generated at {file_path}", "green"))
