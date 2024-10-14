@@ -105,16 +105,13 @@ if __name__ == "__main__":
         generate_default_config(args.config if args.config else 'config.toml')
     elif args.execute:
         config_path = args.config if args.config else 'config.toml'
-        if not args.config and not os.path.exists(config_path):
-            print("No configuration file provided and config.toml does not exist in the current directory.")
-            exit(1)
         config = load_config(config_path)
         if not any(key.startswith('GPU') for key in config):
             print("The configuration file does not contain any GPU to monitor.")
             exit(1)
         monitor_temperatures(config)
     elif args.test_notification:
-        send_notification(0, 85, "Test notification: GPU 0 temperature is {temp}°C")
+        send_notification(0, 0, "Test notification: GPU temperature is {temp}°C")
     else:
         parser.print_help()
         exit(0)
