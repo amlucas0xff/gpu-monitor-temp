@@ -54,7 +54,7 @@ message = "Card 3090 temp. is {temp}°C"
 """
 
 parser = argparse.ArgumentParser(description="Monitor GPU temperatures and send notifications.")
-parser.add_argument('-c', '--config', type=str, help="Path to the TOML configuration file.")
+parser.add_argument('-c', '--config', type=str, default='config.toml', help="Path to the TOML configuration file (Default: config.toml).")
 parser.add_argument('-g', '--generate-config', action='store_true', help="Generate a default config.toml file.")
 parser.add_argument('-e', '--execute', action='store_true', help="Execute the script to monitor GPU temperatures.")
 parser.add_argument('-t', '--test-notification', action='store_true', help="Test the notification system.")
@@ -70,23 +70,17 @@ def load_config(file_path, verbose=False):
                 print(colored(f"Configuration loaded from {file_path}", "green"))
             return config
     else:
-        print("Configuration file not found. Using default configuration.")
-        if verbose:
-            print(colored("Using default configuration.", "yellow"))
+        print(colored("Using default configuration.", "yellow"))
         return DEFAULT_CONFIG
 
 def generate_default_config(file_path='config.toml', verbose=False):
-    if verbose:
-        print(colored("Generating default configuration file...", "yellow"))
     with open(file_path, 'w') as f:
         toml.dump(DEFAULT_CONFIG, f)
-    print(f"Default configuration file generated at {file_path}")
-    if verbose:
-        print(colored(f"Default configuration file generated at {file_path}", "green"))
+    print(colored(f"Default configuration file generated at {file_path}", "green"))
 
 def parse_arguments():
     args = parser.parse_args()
-    if sum([args.config is not None, args.generate_config, args.execute, args.test_notification]) > 1:
+    if sum([args.generate_config, args.execute, args.test_notification]) > 1:
         parser.print_help()
         exit(0)    
     return args
@@ -114,10 +108,10 @@ def send_notification(gpu, temp, message, verbose=False):
 
 def monitor_temperatures(config, verbose=False):
     if verbose:
-        print(colored("Monitoring GPU temperatures...", "yellow"))
+        print(colored("Checking GPU temperatures...", "yellow"))
     temperatures = get_gpu_temperatures(verbose)
     for gpu, temp in temperatures.items():
-        threshold = config.get(f'GPU{gpu}', {}).get('threshold', 80)  # Default threshold
+        threshold = config.get(f'GPU{gpu}', {}).get('threshold')  
         message = config.get(f'GPU{gpu}', {}).get('message', 'GPU {gpu} temperature is {temp}°C')
         if temp > threshold:
             send_notification(gpu, temp, message, verbose)
@@ -126,10 +120,9 @@ if __name__ == "__main__":
     args = parse_arguments()
     verbose = args.verbose
     if args.generate_config:
-        generate_default_config(args.config if args.config else 'config.toml', verbose)
+        generate_default_config(args.config, verbose)
     elif args.execute:
-        config_path = args.config if args.config else 'config.toml'
-        config = load_config(config_path, verbose)
+        config = load_config(args.config, verbose)
         if not any(key.startswith('GPU') for key in config):
             print("The configuration file does not contain any GPU to monitor.")
             exit(1)
