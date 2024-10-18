@@ -1,5 +1,4 @@
 [GPU0]
-
 threshold = 75
 message = "GPU 0 temperature is {temp}°C"
 
